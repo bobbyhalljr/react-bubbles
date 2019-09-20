@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import PrivateRoute from './components/PrivateRoute';
 import BubblePage from './components/BubblePage';
 import "./styles.scss";
+import { BubbleContext } from "./contexts/BubbleContext";
 
 function App() {
   const [colorList, setColorList] = useState([]);
@@ -21,7 +22,9 @@ function App() {
         </nav>
         <Route path="/login" component={Login} />
         {/* <Route component={Login}/> */}
-        <PrivateRoute exact path='/bubble-page' component={BubblePage} />
+        <BubbleContext.Provider value={setColorList}>
+          <PrivateRoute exact path='/bubble-page' component={BubblePage} />
+        </BubbleContext.Provider>
       </div>
     </Router>
   );

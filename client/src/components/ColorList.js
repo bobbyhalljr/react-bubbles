@@ -1,23 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { axiosWithAuth } from '../utils/axiosWithAuth';
+import { BubbleContext } from '../contexts/BubbleContext';
 
 const initialColor = {
   color: "",
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+const ColorList = (props) => {
+  // { colors, updateColors, match, history }
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+
+  const updateColors = useContext(BubbleContext);
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
   };
 
+  const { match, colors } = props;
+
+  useEffect(() => {
+    const id = match.params.id;
+    const colorToUpdate = colors.find(color => `${colorToEdit.id}` === id);
+
+    if(colorToUpdate) {
+      setColorToEdit(colorToUpdate)
+    }
+    
+  }, [match, colors])
+
   const saveEdit = e => {
     e.preventDefault();
+    axiosWithAuth().put(`/colors/${colors.id}`, colorToEdit)
+    .then(res => {
+      console.log(res.data)
+      props.updateColors(res.data)
+      setColorToEdit(initialColor)
+      props.history.push(`/color-list`)
+    })
+    .catch(err => console.log(err.response))
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
@@ -25,13 +49,20 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWithAuth().delete(`/colors/${color.id}`)
+    .then(res => {
+      console.log(res.data)
+      props.updateColors(props.colors)
+      props.history.push('/colors')
+    })
+    .catch(err => console.log(err.response))
   };
 
   return (
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        {colors.map(color => (
+        {props.colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={() => deleteColor(color)}>
