@@ -37,7 +37,7 @@ const ColorList = (props) => {
     axiosWithAuth().put(`/colors/${colors.id}`, colorToEdit)
     .then(res => {
       console.log(res.data)
-      props.updateColors(res.data)
+      updateColors(res.data)
       setColorToEdit(initialColor)
       props.history.push(`/color-list`)
     })
