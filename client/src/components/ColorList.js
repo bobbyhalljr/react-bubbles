@@ -13,7 +13,7 @@ const ColorList = (props) => {
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
-  const updateColors = useContext(BubbleContext);
+  // const setColorList = useContext(BubbleContext);
 
   const editColor = color => {
     setEditing(true);
@@ -34,10 +34,10 @@ const ColorList = (props) => {
 
   const saveEdit = e => {
     e.preventDefault();
-    axiosWithAuth().put(`/colors/${colors.id}`, colorToEdit)
+    axiosWithAuth().put(`/colors/${colorToEdit.id}`, colorToEdit)
     .then(res => {
-      console.log(res.data)
-      updateColors(res.data)
+      console.log(colorToEdit)
+      props.setColorList(res.data.payload)
       setColorToEdit(initialColor)
       props.history.push(`/color-list`)
     })
@@ -53,7 +53,7 @@ const ColorList = (props) => {
     .then(res => {
       console.log(res.data)
       props.updateColors(props.colors)
-      props.history.push('/colors')
+      props.history.push('/color-list')
     })
     .catch(err => console.log(err.response))
   };

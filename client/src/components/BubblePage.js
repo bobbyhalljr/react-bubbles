@@ -14,7 +14,6 @@ const BubblePage = () => {
   useEffect(() => {
     axiosWithAuth().get('/colors')
     .then(res => {
-      console.log(res.data)
       setColorList(res.data)
     })
     .catch(err => console.log(err.response))
@@ -22,13 +21,13 @@ const BubblePage = () => {
 
   return (
     <>
-      <BubbleContext.Provider value={colorList}>
+      {/* <BubbleContext.Provider value={setColorList}> */}
         <Router>
           <NavLink to='/color-list'>ColorList</NavLink>
-          <Route path='/color-list' render={props => <ColorList {...props} colors={colorList} updateColors={setColorList} />} />
+          <Route path='/color-list/' render={props => <ColorList {...props} colors={colorList} updateColors={setColorList} />} />
           <Bubbles colors={colorList} />
         </Router>
-      </BubbleContext.Provider>
+      {/* </BubbleContext.Provider> */}
     </>
   );
 };
